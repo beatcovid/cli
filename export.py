@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+from datetime import datetime
 import json
 import pandas as pd
 import boto3
@@ -27,6 +28,10 @@ json_d = get_json()
 dataframe = get_dataframe(json_d)
 dataframe.to_csv(output_fn_local, index=False)
 
+last_fmt = "%Y-%m-%d-%H:%M:%S"
+now = datetime.now()
+now_str = now.strftime(last_fmt)
+
 access_key = os.environ.get("ACCESS_KEY", "unknown")
 secret_key = os.environ.get("SECRET_KEY", "unknown")
 bucket_name = os.environ.get("S3_BUCKET", "unknown")
@@ -50,4 +55,7 @@ else:
 output_fn_remote = "dump_" + last + ".csv"
 with open(output_fn_local, "rb") as fh:
     client.upload_fileobj(fh, bucket_name, output_fn_remote)
+
+with open(last_dump_fn, "w") as fh:
+    fh.write(now_str)
 client.upload_file(last_dump_fn, bucket_name, last_dump_fn)
