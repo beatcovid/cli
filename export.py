@@ -12,21 +12,26 @@ from settings import FORM_ID, KOBOCAT_API_CREDENTIALS, KOBOCAT_API_URI
 from settings import ACCESS_KEY, SECRET_KEY, BUCKET_NAME
 import requests
 
-logging.basicConfig(level=logging.DEBUG,)
+logging.basicConfig(level=logging.INFO,)
 logger = logging.getLogger("beatcovid.exporter")
 
-def get_json():
+def get_json(since):
     """"
-    @TODO This needs to accept a datetime, which is the date from which onwards the data is to be exported
+    since: entries newer than this date will be returned
+    format of since is defined by last_fmt
 
     """
+    #date_filter_inner = f'
     data_endpoint = f"{KOBOCAT_API_URI}api/v1/data/{FORM_ID}"
     _headers = {
         "Accept": "application/json",
         "Authorization": f"Basic {KOBOCAT_API_CREDENTIALS}",
         }
+    query_inner = f'"$gt":"{since}"'
+    _query = '{"_submission_time": {' + query_inner + '}}'
+    payload = { "query": _query }
     try:
-        f = requests.get(data_endpoint, headers=_headers)
+        f = requests.get(data_endpoint, headers=_headers, params=payload)
     except Exception as e:
         logger.error(e)
         return None
@@ -39,12 +44,8 @@ def get_dataframe(json_dict):
     dataframe = pd.read_json(json.dumps(json_dict))
     return dataframe
 
-output_fn_local = "export_v1_1.csv"
-json_d = get_json()
-dataframe = get_dataframe(json_d)
-dataframe.to_csv(output_fn_local, index=False)
 
-last_fmt = "%Y-%m-%d-%H:%M:%S"
+last_fmt = "%Y-%m-%dT%H:%M:%S+00:00"
 now = datetime.now()
 now_str = now.strftime(last_fmt)
 
@@ -60,9 +61,14 @@ if lastdump_meta['KeyCount'] > 0:
     with open(last_dump_fn) as fh:
         last = fh.read().strip()
         start = datetime.strptime(last, last_fmt)
-        print("dumping from", start)
+        logger.info(f"dumping from {start}")
 else:
-    start = datetime.strptime("2000-01-01-00:00:01", last_fmt)
+    start = datetime.strptime("2000-01-01T00:00:01+00:00", last_fmt)
+
+output_fn_local = "export_v1_1.csv"
+json_d = get_json(start)
+dataframe = get_dataframe(json_d)
+dataframe.to_csv(output_fn_local, index=False)
 
 output_fn_remote = "dump_" + last + ".csv"
 with open(output_fn_local, "rb") as fh:
