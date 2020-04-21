@@ -10,3 +10,4 @@ services:
       - ACCESS_KEY
       - SECRET_KEY
       - S3_BUCKET
+      - FORM_ID

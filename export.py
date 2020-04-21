@@ -7,14 +7,30 @@ import pandas as pd
 import boto3
 import os
 
+import logging
+from settings import FORM_ID, KOBOCAT_API_CREDENTIALS, KOBOCAT_API_URI
+from settings import ACCESS_KEY, SECRET_KEY, BUCKET_NAME
+import requests
+
+logging.basicConfig(level=logging.DEBUG,)
+logger = logging.getLogger("beatcovid.exporter")
+
 def get_json():
     """"
-    @TODO This needs to be replaced with call to API endpoint
     @TODO This needs to accept a datetime, which is the date from which onwards the data is to be exported
+
     """
-    with open("example.json") as fh:
-        data = json.load(fh)
-    return data
+    data_endpoint = f"{KOBOCAT_API_URI}api/v1/data/{FORM_ID}"
+    _headers = {
+        "Accept": "application/json",
+        "Authorization": f"Basic {KOBOCAT_API_CREDENTIALS}",
+        }
+    try:
+        f = requests.get(data_endpoint, headers=_headers)
+    except Exception as e:
+        logger.error(e)
+        return None
+    return f.json()
 
 def get_dataframe(json_dict):
     """
@@ -32,18 +48,14 @@ last_fmt = "%Y-%m-%d-%H:%M:%S"
 now = datetime.now()
 now_str = now.strftime(last_fmt)
 
-access_key = os.environ.get("ACCESS_KEY", "unknown")
-secret_key = os.environ.get("SECRET_KEY", "unknown")
-bucket_name = os.environ.get("S3_BUCKET", "unknown")
-
 last_dump_fn = "lastdumped_v1_1"
 
-client = boto3.client('s3', aws_access_key_id=access_key, aws_secret_access_key=secret_key)
-lastdump_meta = client.list_objects_v2(Bucket=bucket_name, Prefix=last_dump_fn)
+client = boto3.client('s3', aws_access_key_id=ACCESS_KEY, aws_secret_access_key=SECRET_KEY)
+lastdump_meta = client.list_objects_v2(Bucket=BUCKET_NAME, Prefix=last_dump_fn)
 
 last = "from_start"
 if lastdump_meta['KeyCount'] > 0:
-    client.download_file(Bucket=bucket_name, Key=last_dump_fn,
+    client.download_file(Bucket=BUCKET_NAME, Key=last_dump_fn,
                          Filename=last_dump_fn)
     with open(last_dump_fn) as fh:
         last = fh.read().strip()
@@ -54,8 +66,8 @@ else:
 
 output_fn_remote = "dump_" + last + ".csv"
 with open(output_fn_local, "rb") as fh:
-    client.upload_fileobj(fh, bucket_name, output_fn_remote)
+    client.upload_fileobj(fh, BUCKET_NAME, output_fn_remote)
 
 with open(last_dump_fn, "w") as fh:
     fh.write(now_str)
-client.upload_file(last_dump_fn, bucket_name, last_dump_fn)
+client.upload_file(last_dump_fn, BUCKET_NAME, last_dump_fn)
