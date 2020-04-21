@@ -67,12 +67,16 @@ else:
 
 output_fn_local = "export_v1_1.csv"
 json_d = get_json(start)
-dataframe = get_dataframe(json_d)
-dataframe.to_csv(output_fn_local, index=False)
 
-output_fn_remote = "dump_" + last + ".csv"
-with open(output_fn_local, "rb") as fh:
-    client.upload_fileobj(fh, BUCKET_NAME, output_fn_remote)
+if len(json_d) > 0:
+    dataframe = get_dataframe(json_d)
+    dataframe.to_csv(output_fn_local, index=False)
+
+    output_fn_remote = "dump_" + last + ".csv"
+    with open(output_fn_local, "rb") as fh:
+        client.upload_fileobj(fh, BUCKET_NAME, output_fn_remote)
+else:
+    logger.info("Nothing new to export")
 
 with open(last_dump_fn, "w") as fh:
     fh.write(now_str)
