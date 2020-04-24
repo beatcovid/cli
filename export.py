@@ -15,27 +15,29 @@ import requests
 logging.basicConfig(level=logging.INFO,)
 logger = logging.getLogger("beatcovid.exporter")
 
+
 def get_json(since):
     """"
     since: entries newer than this date will be returned
     format of since is defined by last_fmt
 
     """
-    #date_filter_inner = f'
+    # date_filter_inner = f'
     data_endpoint = f"{KOBOCAT_API_URI}api/v1/data/{FORM_ID}"
     _headers = {
         "Accept": "application/json",
         "Authorization": f"Basic {KOBOCAT_API_CREDENTIALS}",
-        }
+    }
     query_inner = f'"$gt":"{since}"'
-    _query = '{"_submission_time": {' + query_inner + '}}'
-    payload = { "query": _query }
+    _query = '{"_submission_time": {' + query_inner + "}}"
+    payload = {"query": _query}
     try:
         f = requests.get(data_endpoint, headers=_headers, params=payload)
     except Exception as e:
         logger.error(e)
         return None
     return f.json()
+
 
 def get_dataframe(json_dict):
     """
@@ -51,13 +53,14 @@ now_str = now.strftime(last_fmt)
 
 last_dump_fn = "lastdumped_v1_1"
 
-client = boto3.client('s3', aws_access_key_id=ACCESS_KEY, aws_secret_access_key=SECRET_KEY)
+client = boto3.client(
+    "s3", aws_access_key_id=ACCESS_KEY, aws_secret_access_key=SECRET_KEY
+)
 lastdump_meta = client.list_objects_v2(Bucket=BUCKET_NAME, Prefix=last_dump_fn)
 
 last = "from_start"
-if lastdump_meta['KeyCount'] > 0:
-    client.download_file(Bucket=BUCKET_NAME, Key=last_dump_fn,
-                         Filename=last_dump_fn)
+if lastdump_meta["KeyCount"] > 0:
+    client.download_file(Bucket=BUCKET_NAME, Key=last_dump_fn, Filename=last_dump_fn)
     with open(last_dump_fn) as fh:
         last = fh.read().strip()
         start = datetime.strptime(last, last_fmt)
