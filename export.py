@@ -31,6 +31,10 @@ def get_json(since):
     query_inner = f'"$gt":"{since}"'
     _query = '{"_submission_time": {' + query_inner + "}}"
     payload = {"query": _query}
+
+    logger.info(f"Fetching {data_endpoint}")
+    logger.info(payload)
+
     try:
         f = requests.get(data_endpoint, headers=_headers, params=payload)
     except Exception as e:
