@@ -8,7 +8,7 @@ COPY ./docker/export /etc/cron.hourly/export
 FROM base as build
 RUN mkdir /app
 WORKDIR /app
-COPY ./app/requirements/pip.txt /app/pip.txt
+ADD ./requirements/pip.txt /app/pip.txt
 RUN pip3 install -r /app/pip.txt
 
 # include app
