@@ -36,7 +36,15 @@ def get_json(since):
     except Exception as e:
         logger.error(e)
         return None
-    return f.json()
+
+    return_obj = None
+
+    try:
+        return_obj = f.json()
+    except Exception as e:
+        logger.exception(e)
+
+    return return_obj
 
 
 def get_dataframe(json_dict):
