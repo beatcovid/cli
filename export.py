@@ -53,9 +53,7 @@ now_str = now.strftime(last_fmt)
 
 last_dump_fn = "lastdumped_v1_1"
 
-client = boto3.client(
-    "s3", aws_access_key_id=ACCESS_KEY, aws_secret_access_key=SECRET_KEY
-)
+client = boto3.client("s3")
 lastdump_meta = client.list_objects_v2(Bucket=BUCKET_NAME, Prefix=last_dump_fn)
 
 last = "from_start"
