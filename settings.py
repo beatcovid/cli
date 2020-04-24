@@ -10,7 +10,7 @@ KOBOCAT_API_URI with authorization provided by KOBOCAT_API_CREDENTIALS
 """
 ACCESS_KEY = os.environ.get("ACCESS_KEY", "unknown")
 SECRET_KEY = os.environ.get("SECRET_KEY", "unknown")
-BUCKET_NAME = os.environ.get("S3_BUCKET", "unknown")
+BUCKET_NAME = os.environ.get("S3_BUCKET", default="aws455-apse2-covid19-prod-export")
 
 FORM_ID = os.environ.get("FORM_ID", "atCimK5Ud4rUwv2WadMicq")
 
