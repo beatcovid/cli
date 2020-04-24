@@ -15,7 +15,7 @@ BUCKET_NAME = os.environ.get("S3_BUCKET", default="aws455-apse2-covid19-prod-exp
 FORM_ID = os.environ.get("FORM_ID", "atCimK5Ud4rUwv2WadMicq")
 
 KOBOCAT_API_URI = os.environ.get(
-    "KOBOCAT_API", default="https://kobo.beatcovid19now.org/"
+    "KOBOCAT_API", default="https://kc.beatcovid19now.org/"
 )
 
 KOBOCAT_API_CREDENTIALS = os.environ.get(
