@@ -1,7 +1,5 @@
 #!/bin/bash
 
-. /app/.aws
-
 cd /app
 
 /usr/local/bin/python export.py
