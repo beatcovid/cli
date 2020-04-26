@@ -21,3 +21,5 @@ KOBOCAT_API_URI = os.environ.get(
 KOBOCAT_API_CREDENTIALS = os.environ.get(
     "KOBOCAT_CREDENTIALS", default="c3VwZXJfYWRtaW46WkxOJEM3WTh6WA=="
 )
+
+REDIS_HOST = os.environ.get("REDIS_HOST", default="127.0.0.10")
