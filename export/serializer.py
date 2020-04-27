@@ -1,9 +1,16 @@
+import csv
+import io
 import re
+from collections.abc import Iterable
 
 from export import logger
 
 __is_number = re.compile(r"^\d+$")
 __is_single_number = re.compile(r"^\d$")
+
+
+def is_iterable(obj):
+    return isinstance(obj, Iterable)
 
 
 def is_number(value):
@@ -49,6 +56,9 @@ def cast_strings_to_bool(tag):
 
 
 def filter_metadata_fields(surveys):
+    if is_iterable(surveys):
+        surveys = list(surveys)
+
     return [
         {
             k: v
@@ -65,6 +75,9 @@ def parse_ua_field(survey):
 
 
 def parse_surveys(surveys):
+    if is_iterable(surveys):
+        surveys = list(surveys)
+
     if not type(surveys) is list:
         surveys = [surveys]
 
@@ -115,3 +128,35 @@ def parse_survey(survey):
             survey_out[field] = value
 
     return survey_out
+
+
+def get_csv_headers(surveys):
+    keys = set()
+
+    for s in surveys:
+        keys.update(s.keys())
+
+    first_keys = ["_id", "_uuid", "user_id"]
+
+    remainder_keys = list(sorted(keys.difference(set(first_keys))))
+
+    return first_keys + remainder_keys
+
+
+def parse_surveys_csv(surveys):
+    if is_iterable(surveys):
+        surveys = list(surveys)
+
+    if not type(surveys) is list:
+        surveys = [surveys]
+
+    data = io.StringIO()
+    csv_header = get_csv_headers(surveys)
+
+    writer = csv.DictWriter(data, csv_header)
+    writer.writeheader()
+
+    for survey in surveys:
+        writer.writerow(survey)
+
+    return data.getvalue()

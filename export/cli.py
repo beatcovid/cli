@@ -4,7 +4,9 @@ from pprint import pprint
 
 from export import logger
 from export.api import get_submission_data
-from export.serializer import parse_surveys
+from export.serializer import parse_surveys, parse_surveys_csv
+
+from .controllers import csv_export
 
 OUTPUT_FORMATS = ["csv", "json", "jsonl"]
 
@@ -23,6 +25,7 @@ def get_parser():
         "--limit", type=int, default=50, help="Limit number of records processed"
     )
     parser.add_argument(
+        "-f",
         "--format",
         type=str,
         default="json",
@@ -40,15 +43,26 @@ if __name__ == "__main__":
     if args.debug:
         logger.setLevel(logging.DEBUG)
 
+    logging.debug("Outputting in {args.format}")
+
     try:
         responses = get_submission_data(limit=args.limit)
 
-        surveys = parse_surveys(responses)
-
-        if args.pretty:
-            pprint(surveys)
-        else:
+        if args.format == "csv":
+            logging.debug(f"Have {len(responses)} surveys")
+            surveys = csv_export(responses)
             print(surveys)
+
+        elif args.format is "json":
+            surveys = parse_surveys(responses)
+
+            if args.pretty:
+                pprint(surveys)
+            else:
+                print(surveys)
+
+        else:
+            raise Exception("Format not supported")
 
     except KeyboardInterrupt as e:
         logger.error("User stopped process")
