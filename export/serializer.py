@@ -20,9 +20,6 @@ def is_number_single(value):
 
 def cast_value_strings(tag):
     """ strips those _0 numbers from the end of values"""
-    if type(tag) is dict:
-        logger.debug(tag)
-
     if type(tag) is str and "_" in tag:
         _, suffix = tag.split("_", 1)
         if is_number_single(suffix):

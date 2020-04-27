@@ -96,7 +96,7 @@ def get_submission_data(
     # we do this funky dance because we don't trust requests to encode it correctly
     payload_str = "&".join("%s=%s" % (k, quote_plus(str(v))) for k, v in _q.items())
 
-    logger.info(f"Fetching {data_endpoint}")
+    logger.debug(f"Fetching {data_endpoint}")
     logger.debug(payload_str)
 
     try:
