@@ -1,4 +1,9 @@
-from .serializer import filter_metadata_fields, parse_surveys, parse_surveys_csv
+from .serializer import (
+    filter_metadata_fields,
+    filter_server_fields,
+    parse_surveys,
+    parse_surveys_csv,
+)
 
 
 def map_many(iterable, function, *other):
@@ -10,5 +15,6 @@ def map_many(iterable, function, *other):
 def csv_export(surveys):
     # surveys = map(filter_metadata_fields, surveys)
     surveys = filter_metadata_fields(surveys)
+    surveys = filter_server_fields(surveys)
 
     return parse_surveys_csv(surveys)

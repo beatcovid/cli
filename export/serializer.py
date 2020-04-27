@@ -69,6 +69,16 @@ def filter_metadata_fields(surveys):
     ]
 
 
+def filter_server_fields(surveys):
+    if is_iterable(surveys):
+        surveys = list(surveys)
+
+    return [
+        {k: v for k, v in i.items() if k not in ["session_id", "server_env"]}
+        for i in surveys
+    ]
+
+
 def parse_ua_field(survey):
     if not "user_agent" in survey:
         return survey
