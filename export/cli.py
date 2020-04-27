@@ -3,7 +3,7 @@ import logging
 from pprint import pprint
 
 from export import logger
-from export.api import get_submission_data
+from export.api import get_submission_data, get_submissions_since_date
 from export.serializer import parse_surveys, parse_surveys_csv
 
 from .controllers import csv_export
@@ -46,7 +46,7 @@ if __name__ == "__main__":
     logging.debug("Outputting in {args.format}")
 
     try:
-        responses = get_submission_data(limit=args.limit)
+        responses = get_submissions_since_date(hours=1)
 
         if args.format == "csv":
             logging.debug(f"Have {len(responses)} surveys")

@@ -1,49 +1,29 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 import json
 import os
+from datetime import datetime, timedelta
 from urllib.parse import quote_plus
 
 import requests
 
 from export import logger
-from export.settings import FORM_ID, get_kobocat_auth, get_kobocat_uri
+from export.settings import get_kobocat_auth, get_kobocat_uri
 
 
-def get_surveys(since=None):
-    """"
-    since: entries newer than this date will be returned
-    format of since is defined by last_fmt
+def get_submissions_since_date(dt_since=None, days=0, hours=0, minutes=0):
+    """
+
 
     """
-    # date_filter_inner = f'
-    data_endpoint = f"{KOBOCAT_API_URI}api/v1/data/{FORM_ID}"
-    _headers = {
-        "Accept": "application/json",
-        "Authorization": f"Basic {KOBOCAT_API_CREDENTIALS}",
-    }
-    query_inner = f'"$gt":"{since}"'
-    _query = '{"_submission_time": {' + query_inner + "}}"
-    payload = {"query": _query}
 
-    logger.info(f"Fetching {data_endpoint}")
-    logger.info(payload)
+    if not dt_since:
+        now = datetime.utcnow()
+        dt_since = now - timedelta(days=days, hours=hours, minutes=minutes)
 
-    try:
-        f = requests.get(data_endpoint, headers=_headers, params=payload)
-    except Exception as e:
-        logger.error(e)
-        return None
+    logger.debug(f"Getting submissions since {dt_since.isoformat()}")
 
-    return_obj = None
+    query = {"_submission_time": {"$gt": dt_since.isoformat()}}
 
-    try:
-        return_obj = f.json()
-    except Exception as e:
-        logger.exception(e)
-
-    return return_obj
+    return get_submission_data(query)
 
 
 def get_submission_data(
@@ -64,6 +44,11 @@ def get_submission_data(
 
     if not data_format in ["csv", "json", "xml", "jsonl"]:
         raise Exception(f"Not a valid format {data_format}")
+
+    if not sort:
+        sort = {
+            "_submission_time": -1,
+        }
 
     _formserver = get_kobocat_uri()
     _authorization = get_kobocat_auth()
