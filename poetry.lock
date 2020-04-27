@@ -88,6 +88,14 @@ webencodings = "*"
 
 [[package]]
 category = "main"
+description = "Amazon Web Services Library"
+name = "boto"
+optional = false
+python-versions = "*"
+version = "2.49.0"
+
+[[package]]
+category = "main"
 description = "The AWS SDK for Python"
 name = "boto3"
 optional = false
@@ -360,6 +368,17 @@ name = "jmespath"
 optional = false
 python-versions = "*"
 version = "0.9.5"
+
+[[package]]
+category = "main"
+description = "Library with helpers for the jsonlines file format"
+name = "jsonlines"
+optional = false
+python-versions = "*"
+version = "1.2.0"
+
+[package.dependencies]
+six = "*"
 
 [[package]]
 category = "dev"
@@ -890,6 +909,25 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 version = "1.14.0"
 
 [[package]]
+category = "main"
+description = "Utils for streaming large files (S3, HDFS, GCS, gzip, bz2...)"
+name = "smart-open"
+optional = false
+python-versions = "*"
+version = "1.11.1"
+
+[package.dependencies]
+boto = "*"
+boto3 = "*"
+requests = "*"
+
+[package.extras]
+all = ["requests", "boto", "boto3", "google-cloud-storage"]
+aws = ["boto", "boto3"]
+gcp = ["google-cloud-storage"]
+test = ["mock", "moto", "pathlib2", "responses", "boto3", "google-compute-engine (2.8.12)", "paramiko", "parameterizedtestcase", "pytest", "pytest-rerunfailures"]
+
+[[package]]
 category = "dev"
 description = "Terminals served to xterm.js using Tornado websockets"
 name = "terminado"
@@ -1015,7 +1053,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "5d4972f9c1f5c1d8f9160bae52acff33dc32c831e206e85cee0fe9b214c43be7"
+content-hash = "13b32c69d8891964474ce9647a85c9786c845cc8274763201853bfb64c772f89"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1046,6 +1084,10 @@ black = [
 bleach = [
     {file = "bleach-3.1.4-py2.py3-none-any.whl", hash = "sha256:cc8da25076a1fe56c3ac63671e2194458e0c4d9c7becfd52ca251650d517903c"},
     {file = "bleach-3.1.4.tar.gz", hash = "sha256:e78e426105ac07026ba098f04de8abe9b6e3e98b5befbf89b51a5ef0a4292b03"},
+]
+boto = [
+    {file = "boto-2.49.0-py2.py3-none-any.whl", hash = "sha256:147758d41ae7240dc989f0039f27da8ca0d53734be0eb869ef16e3adcfa462e8"},
+    {file = "boto-2.49.0.tar.gz", hash = "sha256:ea0d3b40a2d852767be77ca343b58a9e3a4b00d9db440efb8da74b4e58025e5a"},
 ]
 boto3 = [
     {file = "boto3-1.12.45-py2.py3-none-any.whl", hash = "sha256:daa371c7d4addeba77c9c84ff847c598a7af26de6a0a101c7ba040c376d55fc5"},
@@ -1134,6 +1176,10 @@ jinja2 = [
 jmespath = [
     {file = "jmespath-0.9.5-py2.py3-none-any.whl", hash = "sha256:695cb76fa78a10663425d5b73ddc5714eb711157e52704d69be03b1a02ba4fec"},
     {file = "jmespath-0.9.5.tar.gz", hash = "sha256:cca55c8d153173e21baa59983015ad0daf603f9cb799904ff057bfb8ff8dc2d9"},
+]
+jsonlines = [
+    {file = "jsonlines-1.2.0-py2.py3-none-any.whl", hash = "sha256:0ebd5b0c3efe0d4b5018b320fb0ee1a7b680ab39f6eb853715859f818d386cc8"},
+    {file = "jsonlines-1.2.0.tar.gz", hash = "sha256:43b8d5588a9d4862c8a4a49580e38e20ec595aee7ad6fe469b10fb83fbefde88"},
 ]
 jsonschema = [
     {file = "jsonschema-3.2.0-py2.py3-none-any.whl", hash = "sha256:4e5b3cf8216f577bee9ce139cbe72eca3ea4f292ec60928ff24758ce626cd163"},
@@ -1450,6 +1496,9 @@ send2trash = [
 six = [
     {file = "six-1.14.0-py2.py3-none-any.whl", hash = "sha256:8f3cd2e254d8f793e7f3d6d9df77b92252b52637291d0f0da013c76ea2724b6c"},
     {file = "six-1.14.0.tar.gz", hash = "sha256:236bdbdce46e6e6a3d61a337c0f8b763ca1e8717c03b369e87a7ec7ce1319c0a"},
+]
+smart-open = [
+    {file = "smart_open-1.11.1.tar.gz", hash = "sha256:221cc08ae926af6ad72d141f208d228e1e801b1ee9b15f3e466eecf89d931002"},
 ]
 terminado = [
     {file = "terminado-0.8.3-py2.py3-none-any.whl", hash = "sha256:a43dcb3e353bc680dd0783b1d9c3fc28d529f190bc54ba9a229f72fe6e7a54d7"},

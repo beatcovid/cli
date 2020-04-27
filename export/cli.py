@@ -2,11 +2,12 @@ import argparse
 import logging
 from pprint import pprint
 
+from smart_open import open
+
 from export import logger
 from export.api import get_submission_data, get_submissions_since_date
-from export.serializer import parse_surveys, parse_surveys_csv
 
-from .controllers import csv_export
+from .controllers import csv_export, json_export, jsonl_export
 
 OUTPUT_FORMATS = ["csv", "json", "jsonl"]
 
@@ -32,6 +33,9 @@ def get_parser():
         choices=OUTPUT_FORMATS,
         help="Format of export (csv, json, jsonl)",
     )
+    parser.add_argument(
+        "destination", metavar="destination", type=str, nargs="?", help="save to file",
+    )
 
     return parser
 
@@ -43,18 +47,30 @@ if __name__ == "__main__":
     if args.debug:
         logger.setLevel(logging.DEBUG)
 
-    logging.debug("Outputting in {args.format}")
+    logger.debug(args)
+    logger.debug("Outputting in {args.format}")
 
     try:
-        responses = get_submissions_since_date(hours=1)
+        responses = get_submission_data(limit=args.limit)
+        logging.debug(f"Have {len(responses)} surveys")
 
+        # get the data in the correct format
         if args.format == "csv":
-            logging.debug(f"Have {len(responses)} surveys")
             surveys = csv_export(responses)
             print(surveys)
 
-        elif args.format is "json":
-            surveys = parse_surveys(responses)
+        elif args.format == "json":
+            surveys = json_export(responses)
+
+        elif args.format == "jsonl":
+            surveys = jsonl_export(responses)
+
+        else:
+            raise Exception("Format not supported")
+
+        # print to screen or write to file
+        if not args.destination:
+            surveys = str(surveys.getvalue(), "utf-8")
 
             if args.pretty:
                 pprint(surveys)
@@ -62,7 +78,10 @@ if __name__ == "__main__":
                 print(surveys)
 
         else:
-            raise Exception("Format not supported")
+            logging.info(f"Writing to file {args.destination}")
+
+            with open(args.destination, "wb") as fh:
+                fh.write(surveys.getbuffer())
 
     except KeyboardInterrupt as e:
         logger.error("User stopped process")

@@ -12,6 +12,8 @@ pandas = "^1.0.3"
 requests = "^2.23.0"
 huey = "^2.2.0"
 redis = "^3.4.1"
+smart_open = {extras = ["aws"], version = "^1.11.1"}
+jsonlines = "^1.2.0"
 
 [tool.poetry.dev-dependencies]
 black = "19.10b0"

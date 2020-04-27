@@ -3,6 +3,8 @@ import io
 import re
 from collections.abc import Iterable
 
+import jsonlines
+
 from export import logger
 
 __is_number = re.compile(r"^\d+$")
@@ -169,4 +171,20 @@ def parse_surveys_csv(surveys):
     for survey in surveys:
         writer.writerow(survey)
 
-    return data.getvalue()
+    return data
+
+
+def parse_surveys_jsonl(surveys):
+    if is_iterable(surveys):
+        surveys = list(surveys)
+
+    if not type(surveys) is list:
+        surveys = [surveys]
+
+    data = io.BytesIO()
+
+    with jsonlines.Writer(data) as writer:
+        for survey in surveys:
+            writer.write(survey)
+
+    return data
