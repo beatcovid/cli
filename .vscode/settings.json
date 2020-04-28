@@ -3,7 +3,7 @@
     "**/__pycache__/": true,
     ".venv": true
   },
-  "python.pythonPath": ".venv/bin/python3",
+  "python.pythonPath": "/home/n/Projects/Swinburne/beatcovid-cli/.venv/bin/python3",
   "python.linting.pylintPath": "pylint",
   "python.formatting.provider": "black",
   "[python]": {

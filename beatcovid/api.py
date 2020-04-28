@@ -5,8 +5,8 @@ from urllib.parse import quote_plus
 
 import requests
 
-from export import logger
-from export.settings import FORM_ID, get_kobocat_auth, get_kobocat_uri
+from beatcovid import logger
+from beatcovid.settings import FORM_ID, get_kobocat_auth, get_kobocat_uri
 
 
 def get_submissions_since_date(dt_since=None, days=0, hours=0, minutes=0):

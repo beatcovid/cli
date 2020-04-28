@@ -4,8 +4,8 @@ from pprint import pprint
 
 from smart_open import open
 
-from export import logger
-from export.api import get_submission_data, get_submissions_since_date
+from beatcovid import logger
+from beatcovid.api import get_submission_data, get_submissions_since_date
 
 from .controllers import csv_export, json_export, jsonl_export
 

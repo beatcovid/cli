@@ -13,8 +13,6 @@ KOBOCAT_API_URI with authorization provided by KOBOCAT_API_CREDENTIALS
 
 load_dotenv()
 
-BUCKET_NAME = os.environ.get("S3_BUCKET", default=None)
-
 REDIS_HOST = os.environ.get("REDIS_HOST", default="127.0.0.10")
 
 FORM_ID = os.environ.get("FORM_ID", default="3")

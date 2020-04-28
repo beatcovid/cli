@@ -5,7 +5,7 @@ from collections.abc import Iterable
 
 import jsonlines
 
-from export import logger
+from beatcovid import logger
 
 __is_number = re.compile(r"^\d+$")
 __is_single_number = re.compile(r"^\d$")

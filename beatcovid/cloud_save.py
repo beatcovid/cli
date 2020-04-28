@@ -9,9 +9,9 @@ from datetime import datetime
 import boto3
 import pandas as pd
 
-from export import logger
-from export.api import get_surveys
-from export.settings import BUCKET_NAME
+from beatcovid import logger
+from beatcovid.api import get_surveys
+from beatcovid.settings import BUCKET_NAME
 
 client = boto3.client("s3")
 
