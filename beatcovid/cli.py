@@ -57,7 +57,6 @@ if __name__ == "__main__":
         # get the data in the correct format
         if args.format == "csv":
             surveys = csv_export(responses)
-            print(surveys)
 
         elif args.format == "json":
             surveys = json_export(responses)
@@ -70,7 +69,9 @@ if __name__ == "__main__":
 
         # print to screen or write to file
         if not args.destination:
-            surveys = str(surveys.getvalue(), "utf-8")
+
+            if not type(surveys) is list:
+                surveys = str(surveys.getvalue())
 
             if args.pretty:
                 pprint(surveys)
